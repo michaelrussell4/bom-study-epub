@@ -1,215 +1,123 @@
-# Book of Mormon Edition Project 
+# Book of Mormon Study EPUB3 Build Pipeline
 
-The [**Book of Mormon Editions Project**](https://bom-editions.vercel.app) is an independent, nonpartisan digital resource dedicated to documenting and presenting the historical textual development of the Book of Mormon. Its purpose is to provide readers, researchers, and students with clear, direct access to multiple published editions, enabling careful study and transparent comparison over time.
+A Python CLI build pipeline that compiles an enhanced, scholarly **Book of Mormon Study EPUB3** e-book.
 
-All textual data used in this project is sourced from the  
-[BYU Open Scripture Project](https://github.com/BYU-ODH/OpenScripture), whose meticulous work in digitizing historical editions of the Book of Mormon has made rigorous textual study possible. This project gratefully acknowledges their contribution and relies on their data as its authoritative textual foundation.
-
-This project seeks to present historical textual data as accurately and transparently as possible, without interpretation or editorial bias. While absolute neutrality is impossible, I value openness and clarity. I therefore acknowledge that I am a member in good standing of The Church of Jesus Christ of Latter-day Saints and personally believe the Book of Mormon to be the word of God.
-
----
-
-## Features
-
-### Read Complete Editions
-Read the complete text of each of the following edition with clean, consistent formatting:  
-**1830, 1837, 1840, 1841, 1879, 1920, 1981, and 2013**  
-[Browse editions →](https://bom-editions.vercel.app/en/editions)
-
-### See Inline Differences
-Compare editions with inline highlights showing additions, deletions, and modifications.  
-[Try a comparison →](https://bom-editions.vercel.app/en/1830/1-nephi/1?compare=2013)
-
-![Screenshot of 1830 with 2013 comparison](public/screenshots/1830-with-2013-comparison.png)
-
-### Simultaneous View
-View all editions at once to quickly compare changes.  
-[Open simultaneous view →](https://bom-editions.vercel.app/en/simultaneous/1-nephi/1)
-
-![Screenshot of simultaneous view](public/screenshots/simultaneous.png)
-
-### Track All Changes
-Browse a comprehensive, structured record of textual changes across editions.  
-[View all changes →](https://bom-editions.vercel.app/changes/all)
-
-![Screenshot of changes 1830 to 1837](public/screenshots/changes-1830-1837.png)
-
+This tool combines the structured 1830 and latest (2013) edition text data with:
+- **Inline 1830 First Edition Revisions:** Verse-by-verse strikethrough (`<s>`) for 1830 Palmyra first edition wording, immediately followed by modern italic (`<em>`) markup for additions/replacements.
+- **Book of Mormon Onomasticon Pop-up Footnotes:** EPUB3 `noteref` links on every mention of proper names (e.g., *Laman*, *Nephi*, *Zarahemla*) that trigger instant pop-up reading modals on Kindle devices (Paperwhite, Oasis, Scribe) and Apple Books.
+- **Early Historical Scripture Citations (1830–1930):** Numbered discourse citations (`[1]`, `[2]`) at the end of cited verses linking to verbatim historical sermon excerpts from the *Journal of Discourses* and *Teachings of the Prophet Joseph Smith*.
+- **Supplemental Study Resources & Appendices:** Four comprehensive back-matter appendices drawn from foundational scholarly works (John W. Welch, Donald W. Parry, Dr. John L. Sorenson):
+  - **Appendix A — Hebrew Poetic Parallelisms & Prominent Chiasmus:** Inverted parallel poetic layouts for the 10 most prominent Book of Mormon chiasms (Alma 36, Mosiah 5:10–12, Mosiah 3:18–19, Helaman 6:7–13, etc.) highlighting symmetrical pairs, focal center climaxes, and embedded visual charts.
+  - **Appendix B — Internal Geography & Mormon's Map:** Detailed spatial synthesis of Dr. John L. Sorenson's internal map, Welch's 10 essential geographic features, table of the 12 journeys between Nephi and Zarahemla, and high-resolution route maps.
+  - **Appendix C — Legal Cases & Ancient Judicial Procedures:** In-depth legal analysis of ancient Near Eastern and Nephite jurisprudence across major trials (Abinadi, Sherem, Nehor, Korihor, Ammonihah, Paanchi, Seantum) with legal flowcharts.
+  - **Appendix D — Chronology, Plates, & Structural Charts:** Plate lineages, Lehi lineage lifespans, King Mosiah's monetary weight system (Alma 11), and the Allegory of the Olive Tree (Jacob 5).
+- **Interactive Verse Cross-Linking:** Verses with prominent poetic structures or historical context feature interactive study badges (`[☵ Chiasmus]`, `[⚖ Law: ...]`, `[🗺 Mormon's Map]`, `[📊 Monetary System]`, `[🌳 Olive Tree]`) with pop-up footnote modals that jump directly to the corresponding appendix analysis, complete with one-tap return links back to the scriptures.
+- **E-Ink Compatible Typography:** Clean serif typography, justified layout, and full `@media (prefers-color-scheme: dark)` night mode support.
 
 ---
 
-**Note on Verse Divisions and Introductory Material:**
-The Book of Mormon was not divided into verses until the 1879 edition. For consistency and ease of reading, the text from earlier editions has been arranged into verses following the later structure. Additionally, certain content, such as introductory pages, has been omitted from this project to focus on the main scriptural text.
+## Installation & Setup
 
+This project uses [uv](https://docs.astral.sh/uv/) for fast, reproducible Python 3.11+ environment management.
 
-You can find more about me and this project on [My Website.](https://jonny-jackson.com/posts/book-of-mormon-editions-project/)
-
-
-
-## Routes
-
-### General Pages
-- `/`  
-  Home page with links to each edition, explanations, and links to the changes pages. 
-
-- `/about`  
-  About the project
-
----
-
-### Reading Routes
-- `/en/<edition>`  
-  Info on a specific edition (e.g. `1830`, `1920`, `1981`), with links to each book (1 Nephi, Alma, etc) in that edition. 
-  - example `/en/1830` 
-
-- `/en/<edition>/<book>`  
-  Info on a specific book (e.g. `1-nephi`, `alma`, `moroni`), with links to each chapter in that book.
-  - example `/en/1830/1-nephi` 
-
-- `/en/<edition>/<book>/<chapter>`  
-  Read a specific chapter from a specific edition  
-  - Example: `/en/1830/1-nephi/1`
-
-- `/en/<edition>/<book>/<chapter>?showFootnotes=true`  
-  Read a specific chapter from a specific edition **with footnotes enabled**
- 
-
-- `/en/<edition>/<book>/<chapter>?compare=<editionX>`  
-  Read a specific chapter from a specific edition **with inline strikethroughs for removed text from 'edition' to 'editionX'**
-
-- `/en/simultaneous/<book>/<chapter>`  
-  Read a specific chapter from all editions at once. 
-  - Example: `/en/simultaneous/1-nephi/1`
-
----
-
-### Change & Comparison Routes
-- `/changes`  
-  Info of basic textual changes between editions. Links to the "all changes" page and changes between each edition 
-
-- `/changes/all`  
-  All changes across **every edition**
-
-- `/changes/<edition>`  
-  Example: `/changes/1920` Changes from **1830 → 1920** 
-
-
-## Technical details 
-This project uses NextJS for good speed, SEO, and SSG.  
-Uses @tanstack/react-virtual for fast loading of thousands of changes on the changes routes.
-I'll be using **diff-match-patch** to calculate differences between editions
-
-## Development
-To run locally:
 ```bash
-npm i
-npm run dev
+# Clone the repository
+git clone https://github.com/michaelrussell4/bom-study-epub.git
+cd bom-study-epub
+
+# Install dependencies and create virtual environment
+uv sync
 ```
-Alternatively, this code is deployed on Vercel at https://bom-editions.vercel.app/
-
-### Data 
- - I'm storing full JSON for each edition. (I realize I could store the baseline 1830 edition and then store diffs for each newer edition, but I don't think it's worth the work at this time.)  
- - I want to eventually be able to have this work for different languages too, which is why I have an `en` folder, but for now I will only work on English. 
-```
-/public/data/
-  en/
-    1830/
-      1-nephi/
-        1.json
-    1837/
-      1-nephi/
-        1.json
-    1920/
-      1-nephi/
-        1.json
-```
-
-Example JSON file (/public/data/en/1830/1-nephi/1.json):
-```
-{
-  "book": "1 Nephi",
-  "chapter": 1,
-  "edition": "1830",
-  "verses": [
-    { "verse": 1, "text": "I, Nephi, having been born of good parents..." },
-    { "verse": 2, "text": "Yea, I make a record..." }
-    ...
-  ]
-}
-```
-
-The data is from [Open Scripture](https://github.com/BYU-ODH/OpenScripture). I've included a git submodule and the processing steps in the `data-source` folder. This repository has the text data of all the editions in a tab seperated value file.  
-
-
-
-
-# TODO:
-- Make it so if the church releases a new version of the bom, all you need to do is add a new folder of json in public/data.
-- I've set up but haven't completed a lot of the `footnote` functionality. The idea of footnotes was that it would allow readers to see reversions in text. For example, some editions would make a change that brought back an original state of the text. See 1 Nephi 1:16 below:
-```
-1837: ... my father hath written, ...
-1840: ... my father had written, ...
-1841: ... my father hath written, ...
-```
-The reason I haven't finished is because the simultaneous edition page shows changes like this well, and I'm not sure anymore if footnotes in the reading routes are neccesary.
-
-- on edge broswer when scrolling up at the top of the page on a chapter page the topbar scrolls down which looks bad.
-- on mobile if the sidebar is open and its at the bottom and i scroll down on it, it closes the sidebar.
-- there's too little space between the last character of the longest verse and the end of the code block in the simultaneous page.
-- when i expand moroni on the sidebar, it should scroll down for me to see moronis chapters (its the last book.)
-- custom dropdowns.
-
-
-
-
-# Help Needed! Contributing to the Book of Mormon Editions Project
-
-## Ways to Contribute
-
-- **Bug fixes and UI improvements**  
-  Help improve the website’s performance, accessibility, or user experience.
-
-- **Adding new editions**  
-  Contribute digitized editions of the Book of Mormon, in English or other languages.  
-
-- **Data improvements**  
-  We're missing introductory pages and other content that's not the main story of the Book of Mormon. If you have access to it, please add it.  
-
-- **Documentation**  
-  Help improve the site’s guides, explanations, or technical documentation.
 
 ---
 
-## Data Contribution Guidelines
+## Usage
 
-To maintain the scholarly and historical integrity of this project, all data contributions should adhere to the following:
+### 1. Compile the Full Book of Mormon Study Edition
+Builds the complete edition with inline 1830 revisions, Onomasticon popups on every mention, historical discourse citations, and the 4 study appendices:
+```bash
+uv run bom-study-epub -o output/Book_of_Mormon_Study_Edition.epub
+```
 
-1. **Source Requirements**  
-   - Text must come from a verified edition of the Book of Mormon.  
-   - Preferably from public domain sources or with explicit permission to share.  
-   - Include full bibliographic or institutional attribution whenever possible.
+### 2. Focus on Substantive Changes Only
+Ignore pure punctuation and capitalization adjustments to highlight only substantive word differences:
+```bash
+uv run bom-study-epub --substantive-only -o output/Book_of_Mormon_Substantive_Edition.epub
+```
 
-2. **Formatting Requirements**  
-   - Follow the existing JSON structure in the repository.   
-   - Preserve original spelling, punctuation, and formatting.  
+### 3. Adjust Onomasticon Link Density
+By default, every occurrence of a name is tagged (`--all-mentions`). If you prefer lighter footnote density:
+```bash
+# Tag proper names on first mention per chapter
+uv run bom-study-epub --first-mention-per-chapter -o output/Book_of_Mormon_Chapter_Density.epub
+
+# Tag proper names on first mention per book
+uv run bom-study-epub --first-mention-per-book -o output/Book_of_Mormon_Book_Density.epub
+```
+
+### 4. Compile Specific Books for Fast Testing
+```bash
+uv run bom-study-epub --books 1-nephi 2-nephi enos -o output/Sample.epub
+```
+
 ---
 
-## Submitting Changes
+## CLI Options
 
-1. **Fork** the repository.  
-2. Create a **feature branch** for your changes.  
-3. Make your improvements, following the formatting guidelines.  
-4. Submit a **pull request (PR)** with a clear description of your changes.  
-5. Include references or links to sources when contributing textual data.
+| Flag | Description | Default |
+|------|-------------|---------|
+| `-o`, `--output` | Output filepath for the compiled `.epub` | `output/Book_of_Mormon_Study_Edition.epub` |
+| `--substantive-only` | Ignore pure punctuation and capitalization differences | `False` (full word/punctuation diff) |
+| `--all-mentions` | Tag proper names on every occurrence | **Enabled by default** |
+| `--first-mention-per-chapter` | Tag proper names on first mention in each chapter | `False` |
+| `--first-mention-per-book` | Tag proper names on first mention in each book | `False` |
+| `--books` | List of specific books to compile by slug or name | All 15 books |
+| `--data-dir` | Path to folder containing `1830/` and `latest/` editions | `data` |
+| `--onomasticon` | Path to Onomasticon JSON dictionary | `data/onomasticon.json` |
+| `--citations` | Path to early historical citations JSON file | `data/early_citations.json` |
+| `--cover` | Path to cover image | `assets/images/cover.jpg` |
+| `--skip-diff` | Omit 1830 diff tags and render clean modern text | `False` |
+| `--skip-onoma` | Omit Onomasticon footnote popups and section | `False` |
+| `--skip-citations` | Omit 19th-century historical discourse citations | `False` |
+| `--skip-appendices` | Omit back-matter study appendices and verse cross-links | `False` |
 
 ---
 
-### Reporting Issues
+## Project Structure
 
-If you find a bug, formatting error, or missing data, please open an issue on GitHub.
+```text
+bom-study-epub/
+├── assets/
+│   ├── bom_study_supplemental_resources/ # Scholarly source PDFs (Welch, Sorenson, Parry)
+│   └── images/
+│       ├── cover.jpg              # High-resolution EPUB cover
+│       └── appendix/              # 16 High-resolution visual aid charts & maps (PNG)
+├── data/
+│   ├── 1830/                      # 1830 First Edition chapter JSONs
+│   ├── latest/                    # Latest (2013) Edition chapter JSONs
+│   ├── onomasticon.json           # 376 Book of Mormon proper name etymologies
+│   └── early_citations.json       # 4,418 historical sermon citations (1830–1930)
+├── data-source/                   # Reference source processing scripts
+├── src/
+│   ├── __init__.py                # Package exports
+│   ├── appendices.py              # XHTML generator for Appendices A–D
+│   ├── build_epub.py              # EPUB3 compilation pipeline and CLI
+│   ├── chiasmus.py                # Data dictionary & verse mappings for chiasms & legal cases
+│   ├── citations.py               # Historical citation loader & aside generator
+│   ├── differ.py                  # Verse-by-verse 1830 vs. latest diff engine
+│   ├── onomasticon.py             # Collision-free entity matcher & footnote generator
+│   └── styles.css                 # EPUB3 styling (e-ink & dark mode optimized)
+├── pyproject.toml                 # uv / Python project configuration
+└── README.md
+```
 
+---
 
-### Supporting This Project
+## Data Attribution & Scholarly Sources
 
-If you’d like to support this work, please reach out to me directly at [jonny-jackson.com](https://jonny-jackson.com).  
-
-Financial support helps with domain/hosting costs, research, and further development of this project.
+- **Textual Editions:** BYU Open Scripture Project ([GitHub](https://github.com/BYU-ODH/OpenScripture)).
+- **Onomasticon Etymologies:** [Book of Mormon Onomasticon](https://onoma.lib.byu.edu/) (Brigham Young University).
+- **Early Scripture Citations (1830–1930):** Excerpted and aligned from the *Journal of Discourses* and *Teachings of the Prophet Joseph Smith*.
+- **Poetic Parallelisms & Chiasmus:** Donald W. Parry, *Poetic Parallelisms in the Book of Mormon: The Complete Text Reformatted in Worth-while Poetic Lines* (FARMS / Neal A. Maxwell Institute, 2007); John W. Welch, "Chiasmus in the Book of Mormon" (*BYU Studies*, 1969); Scripture Central / KnoWhy, *What Can We Learn from 10 of the Best Chiasms in the Book of Mormon?*.
+- **Internal Geography:** Dr. John L. Sorenson, *Mormon's Map* (FARMS, 1990); John W. Welch and J. Gregory Welch, *Charting the Book of Mormon: Visual Aids for Personal Study and Teaching* (FARMS, 1999).
+- **Nephite Legal Cases & Ancient Law:** John W. Welch, *The Legal Cases in the Book of Mormon* (Brigham Young University Press / Neal A. Maxwell Institute, 2008).

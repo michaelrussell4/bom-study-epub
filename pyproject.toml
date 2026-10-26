@@ -1,0 +1,21 @@
+[project]
+name = "bom-study-epub"
+version = "0.1.0"
+description = "Book of Mormon Scholarly Study EPUB3 pipeline with 1830 revisions, Onomasticon, historical discourses, and study appendices"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "ebooklib>=0.20",
+    "beautifulsoup4>=4.12.0",
+    "lxml>=5.0.0",
+]
+
+[project.scripts]
+bom-study-epub = "src.build_epub:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src"]
